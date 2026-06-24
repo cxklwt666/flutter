@@ -1,14 +1,9 @@
-// 优惠券页面（优惠券展示页）
-// 实现原理：
-//   1. 根据 CouponData.type 字段用 switch 分支设置不同的主题色：满减→粉色、折扣→紫色、包邮→绿色
-//   2. 每张优惠券用 IntrinsicHeight + Row 实现左右分区布局：
-//      左侧彩色区域显示折扣金额+使用条件，右侧白色区域显示标题+有效期
-//   3. "已领取"标签使用 Container 模仿 Chip 样式，背景色使用主题色半透明
+// 优惠券页面
+// 展示可用优惠券列表，根据优惠券类型（满减/折扣/包邮）显示不同颜色。
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../responsive.dart';
 
-// 优惠券页：展示可用优惠券列表，按类型区分颜色
 class CouponPage extends StatelessWidget {
   const CouponPage({super.key, required this.coupons});
   final List<CouponData> coupons;
@@ -29,7 +24,7 @@ class CouponPage extends StatelessWidget {
                   itemCount: coupons.length,
                   itemBuilder: (_, i) {
                     final c = coupons[i];
-                    // 根据优惠券类型选择不同的主题色
+                    // 根据优惠券类型选择颜色
                     Color couponColor;
                     switch (c.type) {
                       case '折扣':
@@ -50,7 +45,7 @@ class CouponPage extends StatelessWidget {
                       child: IntrinsicHeight(
                         child: Row(
                           children: [
-                            // 左侧彩色区域：折扣金额 + 使用条件
+                            // 左侧：折扣/优惠金额
                             Container(
                               width: 100,
                               decoration: BoxDecoration(
@@ -66,7 +61,7 @@ class CouponPage extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            // 中间白色区域：标题 + 类型标签 + 有效期
+                            // 中间：优惠券信息
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(14),

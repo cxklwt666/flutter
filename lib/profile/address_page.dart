@@ -1,15 +1,9 @@
-// 收货地址页面（地址管理CRUD页）
-// 实现原理：
-//   1. 设为默认：遍历地址列表，用 copyWith 只将目标索引 isDefault 设为 true，其余设为 false
-//   2. 删除带撤销功能：先 removeAt 立即删除，再用 SnackBar 的 SnackBarAction 提供"撤销"入口，
-//      撤销时 insert 回原位置
-//   3. 新增地址用 AlertDialog 弹窗 + TextEditingController 收集表单数据，
-//      保存时构造 AddressData 添加到列表
+// 收货地址页面
+// 展示地址列表，支持设为默认、删除（可撤销）和通过弹窗新增地址。
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../responsive.dart';
 
-// 地址管理页：显示地址列表，支持新增、设为默认、删除（可撤销）
 class AddressPage extends StatefulWidget {
   const AddressPage({super.key, required this.addresses});
   final List<AddressData> addresses;
@@ -19,7 +13,7 @@ class AddressPage extends StatefulWidget {
 }
 
 class _AddressPageState extends State<AddressPage> {
-  // 将指定地址设为默认
+  // 设置默认地址
   void _setDefault(int index) {
     setState(() {
       for (var i = 0; i < widget.addresses.length; i++) {
@@ -28,7 +22,7 @@ class _AddressPageState extends State<AddressPage> {
     });
   }
 
-  // 删除地址：带 SnackBar 撤销功能
+  // 删除地址（带撤销功能）
   void _deleteAddress(int index) {
     final removed = widget.addresses[index];
     setState(() => widget.addresses.removeAt(index));
@@ -114,7 +108,7 @@ class _AddressPageState extends State<AddressPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 地址信息行：姓名、手机号、默认标签、删除按钮
+                          // 地址信息行
                           Row(
                             children: [
                               Text(addr.name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
@@ -141,7 +135,7 @@ class _AddressPageState extends State<AddressPage> {
                           // 详细地址
                           Text('${addr.region} ${addr.detail}', style: TextStyle(color: Colors.grey.shade700, height: 1.4)),
                           const SizedBox(height: 10),
-                          // 非默认地址显示"设为默认"按钮
+                          // 设为默认按钮
                           if (!addr.isDefault)
                             Align(
                               alignment: Alignment.centerRight,

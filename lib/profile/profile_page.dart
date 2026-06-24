@@ -1,13 +1,9 @@
-// 个人中心模块（用户入口聚合页）
-// 实现原理：
-//   1. 所有入口（待付款/待发货/收藏/设置/收货地址/优惠券/帮助中心）统一通过 onEntryTap 回调字符串
-//      在父组件中用 if-else 分支判断跳转到对应页面，避免本页持有导航逻辑
-//   2. 待发货角标用 Stack+Positioned 叠加在图标右上角，数量由 pendingDeliveryCount 控制
-//   3. 页面结构：SingleChildScrollView → Column([用户信息卡片, 订单快捷入口Row, 常用服务List])
+// 个人中心模块
+// 展示用户信息卡片、订单快捷入口（待付款/待发货/收藏/设置）和常用服务列表。
+// 点击各入口通过 onEntryTap 回调触发导航。
 import 'package:flutter/material.dart';
 import '../responsive.dart';
 
-// 个人中心页：展示用户信息、订单入口和常用服务列表
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key, required this.onEntryTap, this.pendingDeliveryCount = 0, this.userName = '小鲸鱼'});
   final ValueChanged<String> onEntryTap;
@@ -28,7 +24,7 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 用户信息卡片：头像 + 用户名 + 会员标签
+                // 用户信息卡片（头像 + 用户名 + 会员标签）
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -55,7 +51,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // 我的订单：四个快捷入口（待付款/待发货/收藏/设置）
+                // 我的订单区域：四个快捷入口按钮
                 Text('我的订单', style: t.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 10),
                 Container(
@@ -73,7 +69,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // 常用服务列表：收货地址、优惠券、帮助中心
+                // 常用服务列表
                 Text('常用服务', style: t.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 10),
                 Container(
@@ -96,7 +92,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // 构建快捷入口按钮（图标 + 文字 + 可选数字角标）
+  // 构建快捷入口按钮（图标 + 标签 + 可选数字角标）
   Widget _entryBtn(BuildContext c, IconData icon, String label, VoidCallback onTap, {int badge = 0}) {
     return InkWell(
       onTap: onTap, borderRadius: BorderRadius.circular(10),
@@ -131,7 +127,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // 构建服务列表条目（图标 + 标签 + 右箭头）
+  // 构建服务列表条目
   Widget _serviceTile(BuildContext c, IconData icon, String label, VoidCallback onTap) {
     return ListTile(
       onTap: onTap,

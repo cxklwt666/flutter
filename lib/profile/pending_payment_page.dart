@@ -1,15 +1,9 @@
-// 待付款页面（订单状态：下单未付款）
-// 实现原理：
-//   1. 提供三种操作：单个付款(onPay)、全部付款(onPayAll)、取消订单(onCancel)，
-//      全部通过回调函数交由父组件处理
-//   2. "全部付款"按钮放在 AppBar 的 actions 中，只有列表不为空时才显示
-//   3. 商品条目布局：Row([商品图Column, 商品信息Expanded, 操作按钮Column])
-//      操作列包含"取消"和"付款"两个 TextButton
+// 待付款页面
+// 显示等待支付的商品列表，支持单个付款、全部付款和取消订单。
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../responsive.dart';
 
-// 待付款页：显示未支付的商品列表，支持单个/全部付款和取消
 class PendingPaymentPage extends StatelessWidget {
   const PendingPaymentPage({
     super.key,
@@ -29,7 +23,7 @@ class PendingPaymentPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('待付款'),
         backgroundColor: Colors.white,
-        // "全部付款"按钮
+        // 全部付款按钮
         actions: [
           if (items.isNotEmpty)
             TextButton(
@@ -39,6 +33,7 @@ class PendingPaymentPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
+        // 空状态或直播列表
         child: items.isEmpty
             ? const Center(child: Text('暂无待付款订单', style: TextStyle(color: Colors.grey)))
             : respWrap(
@@ -53,7 +48,7 @@ class PendingPaymentPage extends StatelessWidget {
                       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
                       child: Row(
                         children: [
-                          // 商品缩略图（图片/图标双模式）
+                          // 商品图
                           Container(
                             width: 64, height: 64,
                             decoration: BoxDecoration(color: item.product.color, borderRadius: BorderRadius.circular(12)),
@@ -69,7 +64,7 @@ class PendingPaymentPage extends StatelessWidget {
                                 : Icon(item.product.icon, size: 32, color: Colors.white),
                           ),
                           const SizedBox(width: 12),
-                          // 商品信息：标题、数量、总价
+                          // 商品信息
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +77,7 @@ class PendingPaymentPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          // 操作按钮：取消 + 付款
+                          // 状态标签 + 操作按钮
                           Column(
                             children: [
                               Container(

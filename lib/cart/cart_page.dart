@@ -1,15 +1,10 @@
-// 购物车模块（商品暂存与结算入口）
-// 实现原理：
-//   1. 数量通过 + / - 按钮调节，每次点击触发父组件的 onIncrease/onDecrease 回调，
-//      在 State 中用 copyWith 创建新 CartItemData 实现不可变更新
-//   2. 合计金额用 fold 聚合函数实时计算：_cartItems.fold(0.0, (sum, item) => sum + item.price * item.quantity)
-//   3. QtyBtn 是一个独立小组件，用 InkWell + Container 实现可点击的圆角方形按钮
-//   4. 结算按钮在购物车为空时 disabled（onPressed: null），防止无效操作
+// 购物车模块
+// 显示已加入的商品列表，支持增减数量、删除商品、实时合计金额、去结算。
+// 商品图支持图片/图标双模式，结算后商品进入待付款列表。
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../responsive.dart';
 
-// 购物车页面：显示商品列表，支持增减、删除和结算
 class CartPage extends StatelessWidget {
   const CartPage({
     super.key,
@@ -34,7 +29,7 @@ class CartPage extends StatelessWidget {
 
           return Column(
             children: [
-              // 顶部：标题 + 已选件数 + 合计金额
+              // 顶部标题 + 合计金额
               Padding(
                 padding: EdgeInsets.fromLTRB(pad, 16, pad, 12),
                 child: Row(
@@ -53,7 +48,7 @@ class CartPage extends StatelessWidget {
                   ],
                 ),
               ),
-              // 商品列表：每个商品显示图片、信息、数量调节按钮和删除按钮
+              // 商品列表
               Expanded(
                 child: items.isEmpty
                     ? const Center(child: Text('购物车还是空的', style: TextStyle(color: Colors.grey)))
@@ -69,7 +64,7 @@ class CartPage extends StatelessWidget {
                             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
                             child: Row(
                               children: [
-                                // 商品缩略图（图片/图标双模式）
+                                // 商品图
                                 Container(
                                   width: imgSize, height: imgSize,
                                   decoration: BoxDecoration(color: item.product.color, borderRadius: BorderRadius.circular(12)),
@@ -86,7 +81,7 @@ class CartPage extends StatelessWidget {
                                       : Icon(item.product.icon, size: imgSize / 2, color: Colors.white),
                                 ),
                                 const SizedBox(width: 12),
-                                // 商品信息：标题、分类、价格 + 增减数量按钮
+                                // 商品信息 + 数量调节
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +113,7 @@ class CartPage extends StatelessWidget {
                         },
                       ),
               ),
-              // 底部结算栏：应付金额 + 去结算按钮
+              // 底部结算栏
               Container(
                 padding: EdgeInsets.fromLTRB(pad, 12, pad, 16),
                 decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
@@ -149,7 +144,6 @@ class CartPage extends StatelessWidget {
   }
 }
 
-// 数量调节按钮：灰色圆角方形背景，+1或-1操作
 class QtyBtn extends StatelessWidget {
   const QtyBtn(this.icon, this.onTap, {super.key});
   final IconData icon;

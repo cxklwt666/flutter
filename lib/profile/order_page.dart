@@ -1,14 +1,8 @@
-// 待发货订单页面（订单状态：已付款待发货）
-// 实现原理：
-//   1. initState 时将父组件传来的 orders 复制到本地 _items 可变列表，
-//      避免直接修改父组件数据引发意外更新
-//   2. 退款操作：调用 onRefund 回调通知父组件从 ProfileState.orders 移除，
-//      同时从本地 _items 移除，若列表变为空则自动 pop 返回上一页
-//   3. 商品显示与购物车公用同一套双模式渲染逻辑（imagePath ? Image.asset : Icon）
+// 待发货订单页面
+// 显示已付款的待发货商品列表，支持手动退款。
 import 'package:flutter/material.dart';
 import '../models.dart';
 
-// 待发货订单页：显示已付款未发货的商品列表，支持退款
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key, required this.orders, required this.onRefund});
   final List<CartItemData> orders;
@@ -24,10 +18,11 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     super.initState();
+    // 复制订单数据到本地可变列表
     _items = List.from(widget.orders);
   }
 
-  // 退款：外部回调 + 本地移除 + 列表为空时自动返回
+  // 处理退款：调用外部回调 + 从本地列表移除 + 列表为空时返回上一页
   void _handleRefund(CartItemData item) {
     widget.onRefund(item);
     setState(() => _items.remove(item));
@@ -52,7 +47,7 @@ class _OrderPageState extends State<OrderPage> {
                     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
                     child: Row(
                       children: [
-                        // 商品缩略图（图片/图标双模式）
+                        // 左侧：商品缩略图
                         Container(
                           width: 64, height: 64,
                           decoration: BoxDecoration(color: item.product.color, borderRadius: BorderRadius.circular(12)),
@@ -68,7 +63,7 @@ class _OrderPageState extends State<OrderPage> {
                               : Icon(item.product.icon, size: 32, color: Colors.white),
                         ),
                         const SizedBox(width: 12),
-                        // 商品信息：标题、数量、总价
+                        // 中间：商品信息（标题、数量、总价）
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +76,7 @@ class _OrderPageState extends State<OrderPage> {
                             ],
                           ),
                         ),
-                        // 状态标签 + 退款按钮
+                        // 右侧：状态标签 + 退款按钮
                         Column(
                           children: [
                             Container(

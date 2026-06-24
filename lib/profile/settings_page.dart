@@ -1,13 +1,8 @@
-// 设置页面（用户信息编辑页）
-// 实现原理：
-//   1. 使用 TextEditingController 绑定输入框初始值，用户修改后通过 onSave 回调传回父组件
-//   2. 通知偏好使用 SwitchListTile 组件，true/false 状态由本地 _notifyOrder / _notifyPromo 管理
-//   3. 保存时调用 widget.onSave 回调 → 父组件 setState 更新 ProfileState
-//   4. 输入框、开关、只读信息分别用 _buildTextField / _buildSwitchTile / _buildInfoTile 封装复用
+// 设置页面
+// 允许用户修改昵称、手机号和通知偏好设置，修改后保存至 ProfileState。
 import 'package:flutter/material.dart';
 import '../responsive.dart';
 
-// 设置页面：修改昵称、手机号和通知偏好
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
     super.key,
@@ -36,6 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    // 初始化表单数据
     _nameController = TextEditingController(text: widget.userName);
     _phoneController = TextEditingController(text: widget.userPhone);
     _notifyOrder = widget.notifyOrder;
@@ -44,6 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void dispose() {
+    // 释放控制器
     _nameController.dispose();
     _phoneController.dispose();
     super.dispose();
@@ -64,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 个人信息设置：昵称 + 手机号输入框
+                // 个人信息设置
                 Text('个人信息', style: t.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 10),
                 Container(
@@ -80,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // 通知设置：订单通知 + 促销通知（开关）
+                // 通知设置
                 Text('通知设置', style: t.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 10),
                 Container(
@@ -95,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // 应用信息：版本号 + 开发团队（只读）
+                // 应用信息
                 Text('应用信息', style: t.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 10),
                 Container(
@@ -110,7 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // 保存按钮：保存设置并返回
+                // 保存按钮
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
@@ -127,14 +124,14 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  // 保存设置并返回上一页
+  // 保存设置并返回
   void _save(BuildContext context) {
     widget.onSave(_nameController.text, _phoneController.text, _notifyOrder, _notifyPromo);
     ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(const SnackBar(content: Text('设置已保存')));
     Navigator.of(context).pop();
   }
 
-  // 构建带图标的输入框
+  // 构建输入框
   Widget _buildTextField(String label, TextEditingController controller, IconData icon) {
     return TextField(
       controller: controller,
@@ -147,7 +144,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  // 构建开关设置项（标题 + 副标题 + Switch）
+  // 构建开关设置项
   Widget _buildSwitchTile(String title, String subtitle, bool value, ValueChanged<bool> onChanged) {
     return SwitchListTile(
       title: Text(title, style: const TextStyle(fontSize: 15)),
@@ -158,7 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  // 构建只读信息项（标签 + 值）
+  // 构建只读信息项
   Widget _buildInfoTile(String label, String value) {
     return ListTile(
       title: Text(label, style: const TextStyle(fontSize: 15)),

@@ -1,13 +1,8 @@
-// 帮助中心页面（FAQ常见问题页）
-// 实现原理：
-//   1. FAQ 列表使用 ExpansionPanel 的简化实现：通过 _expandedIndex 记录当前展开项的索引，
-//      点击问题切换展开/收起状态（setState 驱动 UI 更新）
-//   2. 展开时在问题下方显示答案文本，收起时隐藏，使用条件渲染 if (isExpanded)
-//   3. Q 图标用 Container + 圆角 + 背景色模拟，不带图片资源，纯代码实现
+// 帮助中心页面
+// 展示可展开的常见问题列表（FAQ），底部显示联系方式。
 import 'package:flutter/material.dart';
 import '../responsive.dart';
 
-// 帮助中心页：可展开的常见问题列表 + 联系方式
 class HelpPage extends StatefulWidget {
   const HelpPage({super.key});
 
@@ -16,9 +11,10 @@ class HelpPage extends StatefulWidget {
 }
 
 class _HelpPageState extends State<HelpPage> {
+  // 当前展开的 FAQ 索引，null 表示全部收起
   int? _expandedIndex;
 
-  // FAQ 问答对列表
+  // FAQ 列表
   static const _faqs = [
     _FaqItem('如何下单？', '浏览商品页面，选择心仪的商品，点击"加入购物车"按钮。在购物车中确认商品数量和金额后，点击"去结算"完成下单。'),
     _FaqItem('如何付款？', '下单后进入"待付款"页面，选择需要付款的订单，点击"付款"按钮即可完成支付。目前支持模拟支付，无需输入真实支付信息。'),
@@ -55,7 +51,7 @@ class _HelpPageState extends State<HelpPage> {
                       final isExpanded = _expandedIndex == i;
                       return Column(
                         children: [
-                          // 每个问题行：Q图标 + 问题文字 + 展开/收起箭头
+                          // 每个 FAQ 项：Q 图标 + 问题 + 展开/折叠箭头
                           InkWell(
                             onTap: () => setState(() => _expandedIndex = isExpanded ? null : i),
                             borderRadius: BorderRadius.vertical(top: i == 0 ? const Radius.circular(12) : Radius.zero),
@@ -91,7 +87,7 @@ class _HelpPageState extends State<HelpPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // "联系我们"区域：邮箱 + 工作时间
+                // "联系我们"区域
                 Text('联系我们', style: t.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 10),
                 Container(
@@ -114,7 +110,7 @@ class _HelpPageState extends State<HelpPage> {
     );
   }
 
-  // 构建联系信息行（图标 + 文字）
+  // 构建联系信息行
   Widget _contactRow(IconData icon, String text) {
     return Row(
       children: [
@@ -126,7 +122,7 @@ class _HelpPageState extends State<HelpPage> {
   }
 }
 
-// FAQ 问答数据模型
+// FAQ 数据模型
 class _FaqItem {
   const _FaqItem(this.question, this.answer);
   final String question;
